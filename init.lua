@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -331,6 +331,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
+        { '<leader>o', group = '[O]bsidian vaullt' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -398,7 +399,11 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          colorscheme = {
+            enable_preview = true,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -422,6 +427,22 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      -- search for files in full vault
+      vim.keymap.set(
+        'n',
+        '<leader>of',
+        ':Telescope find_files search_dirs={"/home/aghara/Documents/DeezNotes"}<cr>',
+        { desc = 'Search [O]bsidian vaullt [F]iles' }
+      )
+      vim.keymap.set(
+        'n',
+        '<leader>og',
+        ':Telescope live_grep search_dirs={"/home/aghara/Documents/DeezNotes"}<cr>',
+        { desc = 'Search [O]bsidian vaullt by [G]rep' }
+      )
+      vim.keymap.set('n', '<leader>on', ':ObsidianNew<CR>', { desc = 'Create a [N]ew obsidian file in Inbox' })
+      vim.keymap.set('n', '<leader>ot', ':ObsidianNewFromTemplate<CR>', { desc = 'Create a new obsidian file from a [T]emplate in Inbox' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -659,7 +680,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -906,6 +927,16 @@ require('lazy').setup({
     end,
   },
 
+  -- {
+  --   'rose-pine/neovim',
+  --   priority = 1000,
+  --   name = 'rose-pine',
+  --   config = function()
+  --     vim.cmd 'colorscheme rose-pine'
+  --   end,
+  -- },
+  --
+
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -992,7 +1023,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
