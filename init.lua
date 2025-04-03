@@ -439,12 +439,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
-      -- search for files in full vault
-      vim.keymap.set('n', '<leader>of', ':Telescope find_files search_dirs={"~/Documents/DeezNotes"}<cr>', { desc = 'Search [O]bsidian vaullt [F]iles' })
-      vim.keymap.set('n', '<leader>og', ':Telescope live_grep search_dirs={"~/Documents/DeezNotes"}<cr>', { desc = 'Search [O]bsidian vaullt by [G]rep' })
-      vim.keymap.set('n', '<leader>on', ':ObsidianNew<CR>', { desc = 'Create a [N]ew obsidian file in Inbox' })
-      vim.keymap.set('n', '<leader>ot', ':ObsidianNewFromTemplate<CR>', { desc = 'Create a new obsidian file from a [T]emplate in Inbox' })
-
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
