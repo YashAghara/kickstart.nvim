@@ -166,6 +166,16 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- For HTML and JavaScript files, use spaces and set tab width to 2
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'html', 'javascript', 'typescript', 'json' }, -- Apply these settings to HTML/JS/TS files
+  callback = function()
+    vim.o.expandtab = true -- Use spaces instead of tabs
+    vim.o.shiftwidth = 2 -- Set indentation width to 2 spaces
+    vim.o.tabstop = 2 -- Each tab represents 2 spaces
+  end,
+})
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -773,6 +783,10 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        html = { 'prettier', stop_after_first = true },
+        css = { 'prettier', stop_after_first = true },
+        json = { 'prettier', stop_after_first = true },
+        javascript = { 'prettier', stop_after_first = true },
       },
     },
   },
@@ -952,9 +966,9 @@ require('lazy').setup({
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { 'ruby', 'html' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'html' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
