@@ -691,7 +691,28 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
+
+        ruff = {
+          init_options = {
+            settings = {
+              logLevel = 'info', -- change to 'debug' if needed
+            },
+          },
+        },
+
+        pyright = {
+          settings = {
+            pyright = {
+              disableOrganizeImports = true, -- Let Ruff handle this
+            },
+            python = {
+              analysis = {
+                ignore = { '*' }, -- Let Ruff do linting
+              },
+            },
+          },
+        },
         --
 
         lua_ls = {
@@ -726,6 +747,18 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'css-lsp',
+        'fish-lsp',
+        'gopls',
+        'html-lsp',
+        'lua-language-server',
+        'prettier',
+        'prettierd',
+        'pyright',
+        'ruff',
+        'tailwindcss-language-server',
+        'taplo',
+        'typescript-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -783,10 +816,12 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
-        html = { 'prettier', stop_after_first = true },
-        css = { 'prettier', stop_after_first = true },
-        json = { 'prettier', stop_after_first = true },
-        javascript = { 'prettier', stop_after_first = true },
+        html = { 'prettier', 'prettier', stop_after_first = true },
+        css = { 'prettier', 'prettier', stop_after_first = true },
+        json = { 'prettier', 'prettier', stop_after_first = true },
+        jsonc = { 'prettier', 'prettier', stop_after_first = true },
+        javascript = { 'prettier', 'prettier', stop_after_first = true },
+        typescript = { 'prettier', 'prettier', stop_after_first = true },
       },
     },
   },
