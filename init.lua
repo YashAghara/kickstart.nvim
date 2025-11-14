@@ -759,6 +759,7 @@ require('lazy').setup({
         'tailwindcss-language-server',
         'taplo',
         'typescript-language-server',
+        'hyprls',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1060,6 +1061,11 @@ require('lazy').setup({
     },
   },
 })
+
+vim.opt.expandtab = true -- use spaces instead of tabs
+vim.opt.shiftwidth = 4 -- size of indent when auto-indenting
+vim.opt.tabstop = 4 -- number of spaces a tab counts for
+vim.opt.smartindent = true -- smart autoindenting on new lines
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
