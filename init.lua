@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -110,7 +110,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -157,6 +157,9 @@ do
   --   and `:help lua-guide-options`
   vim.o.list = true
   vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+  vim.opt.tabstop = 4
+  vim.opt.softtabstop = 4
+  vim.opt.shiftwidth = 4
 
   -- Preview substitutions live, as you type!
   vim.o.inccommand = 'split'
@@ -171,6 +174,8 @@ do
   -- instead raise a dialog asking if you wish to save the current file(s)
   -- See `:help 'confirm'`
   vim.o.confirm = true
+
+  vim.o.winborder = 'double'
 
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
@@ -383,18 +388,18 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'folke/tokyonight.nvim' }
-  ---@diagnostic disable-next-line: missing-fields
-  require('tokyonight').setup {
-    styles = {
-      comments = { italic = false }, -- Disable italics in comments
-    },
-  }
+  -- vim.pack.add { gh 'folke/tokyonight.nvim' }
+  -- ---@diagnostic disable-next-line: missing-fields
+  -- require('tokyonight').setup {
+  --   styles = {
+  --     comments = { italic = false }, -- Disable italics in comments
+  --   },
+  -- }
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- vim.cmd.colorscheme 'tokyonight-night'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -695,9 +700,54 @@ do
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    ts_ls = {},
 
     stylua = {}, -- Used to format Lua code
+
+    oxfmt = {},
+    -- ty = {},
+    pyrefly = {},
+    ruff = {},
+    hyprls = {},
+    cssls = {},
+    tombi = {},
+
+    -- qmlls = {
+    --   cmd = { 'qmlls6' },
+    --   filetypes = { 'qml', 'qmljs' },
+    -- },
+    --
+    qmlls = {
+      cmd = { 'qmlls6' },
+      filetypes = { 'qml', 'qmljs' },
+
+      handlers = {
+        ['textDocument/publishDiagnostics'] = function(err, result, ctx, _)
+          if result and result.diagnostics then
+            result.diagnostics = vim.tbl_filter(function(d)
+              local msg = d.message:lower()
+
+              local syntax_issue = msg:match 'expected' or msg:match 'syntax' or msg:match 'parse' or msg:match 'invalid' or msg:match 'unexpected token'
+
+              -- promote parser/syntax issues to errors
+              if syntax_issue then
+                d.severity = vim.diagnostic.severity.ERROR
+                return true
+              end
+
+              -- Keep unknown/missing QML types
+              local unknown_type = msg:match 'not a type' or msg:match 'unknown component' or msg:match 'does not exist'
+              if unknown_type then return true end
+
+              -- keep real errors only
+              return d.severity == vim.diagnostic.severity.ERROR
+            end, result.diagnostics)
+          end
+
+          vim.lsp.handlers['textDocument/publishDiagnostics'](err, result, ctx)
+        end,
+      },
+    },
 
     -- Special Lua Config, as recommended by neovim help docs
     lua_ls = {
@@ -776,8 +826,15 @@ do
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
+        lua = true,
+        python = true,
+        javascript = true,
+        typescript = true,
+        javascriptreact = true,
+        typescriptreact = true,
+        json = true,
+        css = true,
+        html = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -796,6 +853,14 @@ do
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
+
+      javascript = { 'oxfmt' },
+      javascriptreact = { 'oxfmt' },
+      typescript = { 'oxfmt' },
+      typescriptreact = { 'oxfmt' },
+      json = { 'oxfmt' },
+      css = { 'oxfmt' },
+      html = { 'oxfmt' },
     },
   }
 
@@ -961,16 +1026,16 @@ do
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug'
-  -- require 'kickstart.plugins.indent_line'
+  require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.autopairs'
   -- require 'kickstart.plugins.neo-tree'
-  -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
+  require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
